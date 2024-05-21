@@ -2,8 +2,14 @@
   display: inline-block;
 }
 
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
 .row {
   display: flex;
+  justify-content: center;
 }
 
 .cell {

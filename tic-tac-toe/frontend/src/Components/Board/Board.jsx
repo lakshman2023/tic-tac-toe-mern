@@ -3,18 +3,43 @@ import axios from 'axios';
 import './Board.css';
 import clickSound from '../../sounds/click.wav';
 import winSound from '../../sounds/win.wav';
+import ticTacToeImg from '../../tic_tac_toe.webp';
+import winnerImg from '../../winner.webp';
 function Board(){
     const [game, setGame] = useState(null);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState(`Welcome buddy, let's play!`);
     const [winningCells, setWinningCells] = useState([]);
     //create a new game using post api on load
     useEffect(() => {
-        const createGame = async() => {
-            const res = await axios.post('http://localhost:5000/api/games/');
-            setGame(res.data);
+        const fetchOrCreateGame = async () => {
+          const gameId = localStorage.getItem('tic-tac-toe-game-id');
+          if (gameId) {
+            // Fetch the existing game
+            try {
+              const res = await axios.get(`http://localhost:5000/api/games/${gameId}`);
+              setGame(res.data);
+            } catch (err) {
+              console.error('Error fetching game:', err);
+              localStorage.removeItem('tic-tac-toe-game-id');
+              createNewGame();
+            }
+          } else {
+            createNewGame();
+          }
         };
-        createGame();
-    }, []);
+    
+        const createNewGame = async () => {
+          try {
+            const res = await axios.post('http://localhost:5000/api/games');
+            setGame(res.data);
+            localStorage.setItem('tic-tac-toe-game-id', res.data._id);
+          } catch (err) {
+            console.error('Error creating game:', err);
+          }
+        };
+    
+        fetchOrCreateGame();
+      }, []);
 
     const playSound = (sound) => {
         const audio = new Audio(sound);
@@ -85,16 +110,17 @@ function Board(){
     } else {
         return (
             <div className="board">
-            {game.board.map((rowArr, rowIdx) => (
-                <div key={rowIdx} className="row"> 
-                {rowArr.map((cell, colIdx) => (
-                    <div key={colIdx} className={`cell ${winningCells.some(([r,c]) => r === rowIdx && c === colIdx) ? 'winning-cell' : ''}`} onClick={() => handleClick(rowIdx, colIdx)}>
-                        {cell}
+                <img src={game.winner ? winnerImg : ticTacToeImg} className="App-logo" alt="logo" />
+                <h2>{message}</h2>
+                {game.board.map((rowArr, rowIdx) => (
+                    <div key={rowIdx} className="row"> 
+                    {rowArr.map((cell, colIdx) => (
+                        <div key={colIdx} className={`cell ${winningCells.some(([r,c]) => r === rowIdx && c === colIdx) ? 'winning-cell' : ''}`} onClick={() => handleClick(rowIdx, colIdx)}>
+                            {cell}
+                        </div>
+                    ))}
                     </div>
                 ))}
-                </div>
-            ))}
-            <h2>{message}</h2>
             </div>
         );
     }
