@@ -6,17 +6,22 @@ const GameSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         auto: true,
     },
+    match : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'Match',
+        required : true
+    },
     board : {
         type : [[String]],
-        default : [['','',''],['','',''],['','','']]
+        required : true
     },
     currentPlayer : {
         type : String,
-        default : 'O'
+        default : 'X'
     },
     winner : {
         type : String,
-        default : ''
+        default : null
     }
 });
 

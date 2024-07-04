@@ -1,4 +1,4 @@
-.board {
+/* .board {
   display: inline-block;
 }
 
@@ -41,4 +41,30 @@
   
   .winning-cell {
     animation: winner 1s infinite;
-  }
+  } */
+
+  .board {
+    display: grid;
+    gap: 1px; /* Add gap between cells for a more distinct border */
+    background-color: black; /* Background color to enhance visibility of gaps */
+}
+
+.board-row {
+    display: flex;
+}
+
+.board-cell {
+    width: 100px; /* Set the width of each cell */
+    height: 100px; /* Set the height of each cell */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black; /* Add border to each cell */
+    font-size: 2em; /* Set font size for the cell content */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    background-color: white; /* Ensure cells have a visible background color */
+}
+
+.board-cell:hover {
+    background-color: #f0f0f0; /* Change background color on hover */
+}
